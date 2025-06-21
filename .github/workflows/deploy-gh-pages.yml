@@ -1,0 +1,81 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # 或者你的主要分支名稱
+  workflow_dispatch: # 允許手動觸發
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x' # 指定你專案使用的 Python 版本
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        # 注意：如果你的 Flask 應用 app.py 僅用於本地開發提供靜態文件，
+        # 並且你打算直接部署 static/ 和 templates/index.html，
+        # 那麼安裝 Flask 等依賴可能不是部署到 GitHub Pages 所必需的。
+        # GitHub Pages 主要服務靜態內容。
+
+      # 如果你的 app.py 是用來生成靜態文件的 (例如使用 Frozen-Flask)
+      # 你需要在此處添加一個步驟來運行它以生成輸出文件夾 (例如 build/)
+      # - name: Build static site
+      #   run: python app.py build # 假設你有這樣的命令
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # 上傳整個倉庫的根目錄作為 artifact。
+          # 如果你的靜態網站在一個子目錄 (例如 'build/', 'dist/', 'public/'),
+          # 請修改 path 到那個目錄。
+          # 對於這個專案，我們假設 index.html 和 static/ 可以在根目錄被服務。
+          # 如果 index.html 在 templates/ 且需要被移到根目錄或特定目錄，
+          # 需要在前面增加一個步驟來處理。
+          # 為了簡單起見，我們先嘗試直接部署根目錄，並假設 index.html 可以被找到。
+          # 或者，更常見的做法是，將 `templates/index.html` 複製到 artifact 的根目錄。
+          # 並將 `static/` 目錄也複製過去。
+          # 根據專案結構，我們需要將 templates/index.html 複製到輸出目錄的根，
+          # 並將 static/ 資料夾也複製過去。
+
+      - name: Prepare artifact structure for Static JS Version
+        run: |
+          mkdir -p _site/static
+          cp index_static.html _site/index.html
+          cp static/style_static.css _site/static/style_static.css
+          cp static/script_static.js _site/static/script_static.js
+          # Add any other JS utility files if created, e.g.:
+          # if [ -f "static/smc_concepts_static.js" ]; then cp static/smc_concepts_static.js _site/static/; fi
+          # if [ -f "static/strategies_static.js" ]; then cp static/strategies_static.js _site/static/; fi
+          # 如果有其他根目錄的靜態檔案也需要複製，例如 CNAME, .nojekyll 等
+          # if [ -f "CNAME" ]; then cp CNAME _site/CNAME; fi
+          # To prevent Jekyll processing on GitHub Pages, if not desired:
+          # touch _site/.nojekyll
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site' # 上傳 _site 文件夾的內容
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        # 如果你在上一步 'Upload artifact' 中指定了特定的 artifact 名稱，
+        # 這裡可能需要指定 artifact_name。預設是 'github-pages'。
