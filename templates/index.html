@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMC Backtester</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>SMC Trading Strategy Backtester</h1>
+
+        <form id="backtestForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="dataFile">Upload OHLCV Data (CSV):</label>
+                <input type="file" id="dataFile" name="file" accept=".csv" required>
+                <small>CSV must include columns like: timestamp, open, high, low, close. Volume is optional.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="strategy">Select SMC Strategy:</label>
+                <select id="strategy" name="strategy" required>
+                    {% if strategies %}
+                        {% for strategy_name in strategies %}
+                            <option value="{{ strategy_name }}">{{ strategy_name }}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option value="" disabled>No strategies available</option>
+                    {% endif %}
+                </select>
+            </div>
+
+            <fieldset>
+                <legend>Backtest Parameters (Optional)</legend>
+                <div class="form-group">
+                    <label for="initial_capital">Initial Capital:</label>
+                    <input type="number" id="initial_capital" name="initial_capital" value="100000" step="1000">
+                </div>
+                <div class="form-group">
+                    <label for="commission_bps">Commission (bps):</label>
+                    <input type="number" id="commission_bps" name="commission_bps" value="2" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="slippage_bps">Slippage (bps):</label>
+                    <input type="number" id="slippage_bps" name="slippage_bps" value="1" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="default_position_size">Default Position Size (units):</label>
+                    <input type="number" id="default_position_size" name="default_position_size" value="1" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="execution_price_type">Execution Price Type:</label>
+                    <select id="execution_price_type" name="execution_price_type">
+                        <option value="close" selected>Current Bar Close</option>
+                        <option value="next_open">Next Bar Open</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <button type="submit">Run Backtest</button>
+        </form>
+
+        <div id="errorDisplay" class="error"></div>
+
+        <div id="results" class="results">
+            <h2>Backtest Results:</h2>
+            <p>Results will be displayed here after running the backtest.</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

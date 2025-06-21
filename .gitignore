@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Flask
+instance/
+.webassets-cache
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+# WIndows anaconda
+Anaconda/
+
+# Data files
+uploads/
+*.csv
+# Except maybe example data if you add any to the repo directly
+
+# IDE / Editor specific
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS specific
+.DS_Store
+Thumbs.db
