@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMC Backtester (Static JS Version)</title>
+    <link rel="stylesheet" href="static/style_static.css">
+</head>
+<body>
+    <div class="container">
+        <h1>SMC Trading Strategy Backtester (Static JS Version)</h1>
+
+        <form id="backtestFormStatic" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="dataFileStatic">Upload OHLCV Data (CSV):</label>
+                <input type="file" id="dataFileStatic" name="file" accept=".csv" required>
+                <small>CSV must include columns like: timestamp, open, high, low, close. Volume is optional.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="strategyStatic">Select SMC Strategy:</label>
+                <select id="strategyStatic" name="strategy" required>
+                    <!-- Options will be populated by JavaScript or hardcoded initially -->
+                    <option value="ExampleStrategy1">Example Strategy 1 (JS)</option>
+                    <option value="ExampleStrategy2">Example Strategy 2 (JS - Placeholder)</option>
+                </select>
+            </div>
+
+            <fieldset>
+                <legend>Backtest Parameters (Optional)</legend>
+                <div class="form-group">
+                    <label for="initial_capital_static">Initial Capital:</label>
+                    <input type="number" id="initial_capital_static" name="initial_capital" value="100000" step="1000">
+                </div>
+                <div class="form-group">
+                    <label for="commission_bps_static">Commission (bps):</label>
+                    <input type="number" id="commission_bps_static" name="commission_bps" value="2" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="slippage_bps_static">Slippage (bps):</label>
+                    <input type="number" id="slippage_bps_static" name="slippage_bps" value="1" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="default_position_size_static">Default Position Size (units):</label>
+                    <input type="number" id="default_position_size_static" name="default_position_size" value="1" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="execution_price_type_static">Execution Price Type:</label>
+                    <select id="execution_price_type_static" name="execution_price_type">
+                        <option value="close" selected>Current Bar Close</option>
+                        <option value="next_open">Next Bar Open</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <button type="submit">Run Backtest (JS)</button>
+        </form>
+
+        <div id="errorDisplayStatic" class="error"></div>
+
+        <div id="resultsStatic" class="results">
+            <h2>Backtest Results (JS):</h2>
+            <p>Results will be displayed here after running the backtest.</p>
+        </div>
+    </div>
+
+    <script src="static/script_static.js"></script>
+</body>
+</html>
